@@ -1,71 +1,115 @@
-import  cartItems  from './store.js';
+import items from '../items.json';
 
-
-//  IMPORTANT  you need to make sure that all the information that you are adding to the cart is saved to local storage.
+// //  IMPORTANT  you need to make sure that all the information that you are adding to the cart is saved to local storage.
 
 const cartButton = document.querySelector('[data-cart-button]');
+const cartAll = document.querySelector('[data-cart]');
 const cartContainer = document.querySelector('[data-cart-container]');
-const itemTemplate = document.querySelector('[data-item-template]');
-const cartItemTemplate = document.querySelector('[data-cart-item-template]');
-const displayAmountOfItems = document.querySelector('[data-amount-of-items]');
 const cartItemsContainer = document.querySelector('[data-cart-items-container]');
-const cartCountItems = cartItemsContainer.childElementCount;
+const displayAmountOfItems = document.querySelector('[data-amount-of-items]');
+let cartCountItems = cartItemsContainer.childElementCount;
+const cartItemTemplate = document.querySelector('[data-cart-item-template]');
+const cartData = [];
 
-// get the information from the local storage
-const dataLocalStorage = JSON.parse(localStorage.getItem('Cart Items'));
-console.log(dataLocalStorage);
+
+// // get the information from the local storage
+// const dataLocalStorage = JSON.parse(localStorage.getItem('Cart Items'));
+// console.log(dataLocalStorage);
 
 
 
 export function cart() {
+    // if (cartData.length == 0) {
+    //     cartButton.classList.add('invisible');
+    // }
     // create an event listener to the cart button
+    cartButtonListener();
+
+}
+
+function cartButtonListener() {
+    // add the ability to hide and open (toggle) the cart window every time you click the button
+
     cartButton.addEventListener('click', e => {
-        console.log('hello');
-        // add the ability to hide and open (toggle) the cart window
-        cartContainer.classList.toggle('invisible');
+        cartAll.classList.toggle('invisible');
     })
-    // console.log(cartItems);
-    displayAmountOfItems.textContent = cartCountItems;
-    if (displayAmountOfItems.textContent == 0) {
-        cartButton.classList.add('invisible');
+
+    // if the cart is empty make sure that the cart is hidden
+}
+
+
+
+
+
+
+
+
+export function addItemToCartData(id) {
+
+    const itemObject = {
+        id: id,
+        quantity: 1
     }
+
+    cartData.push(itemObject);
+
+    // console.log(cartData);
 }
 
-const cartItem = cartItemTemplate.content.cloneNode(true);
-console.log(cartItem);
 
 
-export function createCartItem() {
+export function deleteCartContent() {
+    cartItemsContainer.innerHTML = '';
+}
 
 
-    console.log(cartItems);
+
+export function renderCartItems() {
+    cartData.forEach(itemData => {
+        // console.log(items);
+        // console.log(itemData);
+        const item = items.find( i => i.id == itemData.id);
+        console.log(item);
+
+        const newItem = cartItemTemplate.content.cloneNode(true);
+
+        const imageUrl = 'https://dummyimage.com/210x130/';
 
 
-    // dataLocalStorage.forEach( item => {
+        // // add the information of the item to the template duplicate
 
-        // console.log(item);
+        const id = newItem.querySelector('[data-cart-id]');
+        id.id = item.id;
+
+        const image = newItem.querySelector('[data-cart-image]');
+        image.src = `${imageUrl}${item.imageColor}/${item.imageColor}`;
+
+        const name = newItem.querySelector('[data-cart-name]');
+        name.textContent = item.name;
+
+        // const quantity = newItem.querySelector('[data-cart-quantity]');
+        // // category.textContent = item.category;
+
+        const price = newItem.querySelector('[data-cart-price-cent]');
+        price.textContent = item.priceCents;
 
 
-        // duplicate the template of the cart item
 
+        cartItemsContainer.appendChild(newItem);
+    })
 
-        // // select the elements that you need
-        // const image = cartItem.querySelector('[data-cart-image]');
-        // image.src = item.image;
-
-
-        // const name = cartItem.querySelector('[data-cart-name]');
-        // name.textContent = item.name;
-
-        // const price = cartItem.querySelector('[data-cart-price]');
-        // price.textContent = item.price;
-
-        // // console.log(cartItem);
-    //     cartItemsContainer.appendChild(cartItem);
-
-    // })
 
 }
+
+
+
+// const cartItem = cartItemTemplate.content.cloneNode(true);
+// console.log(cartItem);
+
+
+
+
+
 
 // add and event listener to the button of add to cart
     // when you click on the button the item that you selected needs to be added to the cart

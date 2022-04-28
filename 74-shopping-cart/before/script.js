@@ -1,10 +1,10 @@
-import { createItem, loadInformation } from "./js/store.js";
+import { createItem, setupStore } from "./js/store.js";
 import { cart, createCartItem } from "./js/cart.js";
 
 
-loadInformation();
+setupStore();
 cart();
-createCartItem();   
+// createCartItem();
 
 
 // const dataLocalStorage = JSON.parse(localStorage.getItem('Cart Items'));

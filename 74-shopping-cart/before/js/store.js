@@ -1,75 +1,64 @@
 import items from '../items.json';
+import { addItemToCartData, renderCartItems, deleteCartContent } from './cart';
 
 // select the items that you need.
 const itemTemplate = document.querySelector('[data-item-template]');
-const cartItemTemplate = document.querySelector('[data-cart-item]');
 const elementsContainer = document.querySelector('#elements-container')
-const cartItems = [];
 
 
 // functions
+export function setupStore() {
+    // adds an event listener to the "add to cart" button
+    document.addEventListener('click', e => {
+
+        if (e.target.matches('[data-add-to-cart]')) {
+
+            // select the item id of the element that we are clicking
+            const id = e.target.closest('[data-id]').id;
+
+            addItemToCartData(id);
+            deleteCartContent();
+            renderCartItems();
+            // Mak sure the items don't get duplicated if they are the same.
+
+        }
+
+    })
 
 
-export function createItem(item) {
+    items.forEach(createItem)
+}
+
+function createItem(item) {
     // create a duplicate of the template item
+
+
     const newItem = itemTemplate.content.cloneNode(true);
 
     const imageUrl = 'https://dummyimage.com/420x260/';
 
-    // select the items that you need
-    const image = newItem.querySelector('[data-image]');
-    const name = newItem.querySelector('[data-name]');
-    const category = newItem.querySelector('[data-category]');
-    const price = newItem.querySelector('[data-price-cent]');
 
     // add the information of the item to the template duplicate
+
+    const id = newItem.querySelector('[data-id]');
+    id.id = item.id;
+
+    const image = newItem.querySelector('[data-image]');
     image.src = `${imageUrl}${item.imageColor}/${item.imageColor}`;
+
+    const name = newItem.querySelector('[data-name]');
     name.textContent = item.name;
+
+    const category = newItem.querySelector('[data-category]');
     category.textContent = item.category;
+
+    const price = newItem.querySelector('[data-price-cent]');
     price.textContent = item.priceCents;
 
-    const addToCart = newItem.querySelector('[data-add-to-cart]');
-    addToCart.addEventListener('click', e => {
-        console.log(e.target);
-        const parent = e.target.closest('.parent');
-        console.log(parent);
 
-        const newCartItem = {
-            name: parent.querySelector('[data-name]').textContent,
-            price: parent.querySelector('[data-price-cent]').textContent,
-            image: parent.querySelector('[data-image]').src,
-            quantity: 1
-        }
-        // if (cartItems )
-        cartItems.push(newCartItem);
-
-        console.log(cartItems);
-        addToLocalStorage(cartItems);
-    })
 
     elementsContainer.appendChild(newItem);
 }
 
-function addToLocalStorage (data) {
-    const stringData = JSON.stringify(data)
-    localStorage.setItem('Cart Items', stringData);
-}
-function getFromLocalStorage () {
-    localStorage.getItem('Cart Items');
-}
 
-export function createItemCart(itemCart) {
-    const newItemcart = cartItemTemplate.content.cloneNode(true);
-    const localStorage = getFromLocalStorage();
-    
 
-}
-
-// Intl.NumberFormat()
-
-export function loadInformation() {
-    items.forEach(item => {
-        createItem(item)
-
-    })
-}
