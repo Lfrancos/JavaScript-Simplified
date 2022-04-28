@@ -1,9 +1,9 @@
 import { createItem, setupStore } from "./js/store.js";
-import { cart, createCartItem } from "./js/cart.js";
+import { cartSetup, createCartItem } from "./js/cart.js";
 
 
 setupStore();
-cart();
+cartSetup();
 // createCartItem();
 
 

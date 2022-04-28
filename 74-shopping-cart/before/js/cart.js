@@ -9,19 +9,16 @@ const cartItemsContainer = document.querySelector('[data-cart-items-container]')
 const displayAmountOfItems = document.querySelector('[data-amount-of-items]');
 let cartCountItems = cartItemsContainer.childElementCount;
 const cartItemTemplate = document.querySelector('[data-cart-item-template]');
+const cartTotal = document.querySelector('[data-cart-total]');
 const cartData = [];
 
 
-// // get the information from the local storage
-// const dataLocalStorage = JSON.parse(localStorage.getItem('Cart Items'));
-// console.log(dataLocalStorage);
 
-
-
-export function cart() {
-    // if (cartData.length == 0) {
-    //     cartButton.classList.add('invisible');
-    // }
+export function cartSetup() {
+    // Hide the cart button if it has no items inside.
+    if (cartData.length == 0) {
+        cartButton.classList.add('invisible');
+    }
     // create an event listener to the cart button
     cartButtonListener();
 
@@ -29,20 +26,10 @@ export function cart() {
 
 function cartButtonListener() {
     // add the ability to hide and open (toggle) the cart window every time you click the button
-
     cartButton.addEventListener('click', e => {
         cartAll.classList.toggle('invisible');
     })
-
-    // if the cart is empty make sure that the cart is hidden
 }
-
-
-
-
-
-
-
 
 export function addItemToCartData(id) {
 
@@ -53,16 +40,22 @@ export function addItemToCartData(id) {
 
     cartData.push(itemObject);
 
-    // console.log(cartData);
+    countItemsOnCart();
+    // make the cart button appear if it has items inside.
+    if (cartData.length > 0) {
+        cartButton.classList.remove('invisible');
+    }
+
+
 }
 
-
+function countItemsOnCart() {
+    displayAmountOfItems.textContent = cartData.length;
+}
 
 export function deleteCartContent() {
     cartItemsContainer.innerHTML = '';
 }
-
-
 
 export function renderCartItems() {
     cartData.forEach(itemData => {
@@ -98,23 +91,22 @@ export function renderCartItems() {
         cartItemsContainer.appendChild(newItem);
     })
 
-
+    sumPriceItemsOnCart();
 }
 
+function sumPriceItemsOnCart() {
+    const cartItemsPriceArray = cartItemsContainer.querySelectorAll('[data-cart-price-cent]');
+    const newArray =[]
+    cartItemsPriceArray.forEach(div => {
+        newArray.push(div.innerHTML);
+    })
+    const sumPrices = newArray.reduce((a,c) => Number(a) + Number(c), 0);
+    cartTotal.textContent = sumPrices;
+}
 
-
-// const cartItem = cartItemTemplate.content.cloneNode(true);
-// console.log(cartItem);
-
-
-
-
-
-
-// add and event listener to the button of add to cart
-    // when you click on the button the item that you selected needs to be added to the cart
     // make sure that the information is being added to the local storage.
-
+// cart
+// Make sure the total is the sum of the price of all the items inside of the cart.
 // add and event listener to the close button of each of the item added to the cart.
     // when clicked the item that you selected needs to be deleted
     // make sure that the item is deleted from the local storage (that way is going to be updated when I reload the page.)
