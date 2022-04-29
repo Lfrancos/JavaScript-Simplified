@@ -16,6 +16,7 @@ export const cartData = [];
 
 
 export function cartSetup() {
+    hideOrShowCartButton();
     // Hide the cart button if it has no items inside.
     // create an event listener to the cart button
     cartButtonListener();
@@ -40,10 +41,19 @@ function deleteItemButtonListener() {
             deleteCartContent();
             renderCartItems();
             countItemsOnCart();
+            hideOrShowCartButton();
         }
     })
 }
 
+function hideOrShowCartButton() {
+    if (displayAmountOfItems.textContent < 1 || displayAmountOfItems.textContent === '' || displayAmountOfItems.textContent == 0) {
+        cartButton.classList.add('invisible');
+        cartAll.classList.add('invisible');
+    } else if (displayAmountOfItems.textContent > 0) {
+        cartButton.classList.remove('invisible');
+    }
+}
 export function addItemToCartData(id) {
     const duplicatedCartItem = cartData.find(item => item.id === id);
     if (!duplicatedCartItem) {
@@ -61,6 +71,7 @@ export function addItemToCartData(id) {
 
     renderCartItems();
     countItemsOnCart();
+    hideOrShowCartButton();
 }
 
 function countItemsOnCart() {
