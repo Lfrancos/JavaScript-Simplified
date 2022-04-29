@@ -1,4 +1,5 @@
 import items from '../items.json';
+import { moneyFormatter } from './utils/moneyFormatter';
 
 // //  IMPORTANT  you need to make sure that all the information that you are adding to the cart is saved to local storage.
 
@@ -18,12 +19,28 @@ export function cartSetup() {
     // Hide the cart button if it has no items inside.
     // create an event listener to the cart button
     cartButtonListener();
+    deleteItemButtonListener();
  }
 
 function cartButtonListener() {
     // add the ability to hide and open (toggle) the cart window every time you click the button
     cartButton.addEventListener('click', e => {
         cartAll.classList.toggle('invisible');
+    })
+}
+function deleteItemButtonListener() {
+    cartItemsContainer.addEventListener('click', e => {
+        if (e.target.matches('[data-remove-from-cart-button]')) {
+            const id = e.target.closest('[data-cart-id]').id;
+            const item = cartData.find(i => i.id === id);
+            console.log(item);
+            const index = cartData.indexOf(item);
+            console.log(index);
+            cartData.splice(index,1)
+            deleteCartContent();
+            renderCartItems();
+            countItemsOnCart();
+        }
     })
 }
 
@@ -47,7 +64,13 @@ export function addItemToCartData(id) {
 }
 
 function countItemsOnCart() {
-    displayAmountOfItems.textContent = cartData.length;
+    const array = [];
+    cartData.forEach(item => {
+        array.push(item.quantity);
+    })
+
+    const sumAmountOfItems = array.reduce((a , c) => a + c , 0);
+    displayAmountOfItems.textContent = sumAmountOfItems;
 }
 
 function deleteCartContent() {
@@ -78,21 +101,25 @@ function renderCartItems() {
         }
 
         const price = newItem.querySelector('[data-cart-price-cent]');
-        price.textContent = item.priceCents * itemData.quantity;
+        console.log(typeof item.priceCents)
+        price.textContent = moneyFormatter((item.priceCents / 100) * itemData.quantity)  ;
         // add the items to the cart container
         cartItemsContainer.appendChild(newItem);
     });
     sumPriceItemsOnCart();
+    console.log(cartData);
 }
 
 function sumPriceItemsOnCart() {
-    const cartItemsPriceArray = cartItemsContainer.querySelectorAll('[data-cart-price-cent]');
+    // const cartItemsPriceArray = cartItemsContainer.querySelectorAll('[data-cart-price-cent]');
     const newArray =[]
-    cartItemsPriceArray.forEach(div => {
-        newArray.push(div.innerHTML);
+
+    cartData.forEach(item => {
+        const price = items.find(i => i.id == item.id)
+        newArray.push(price.priceCents * item.quantity);
     })
     const sumPrices = newArray.reduce((a,c) => Number(a) + Number(c), 0);
-    cartTotal.textContent = sumPrices;
+    cartTotal.textContent = moneyFormatter(sumPrices / 100);
 }
 
     // make sure that the information is being added to the local storage.

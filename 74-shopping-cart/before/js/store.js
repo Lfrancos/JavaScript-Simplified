@@ -1,5 +1,6 @@
 import items from '../items.json';
 import { addItemToCartData, renderCartItems, deleteCartContent, cartData } from './cart';
+import { moneyFormatter } from './utils/moneyFormatter';
 
 // select the items that you need.
 const itemTemplate = document.querySelector('[data-item-template]');
@@ -14,7 +15,7 @@ export function setupStore() {
         if (e.target.matches('[data-add-to-cart]')) {
             // select the item id of the element that we are clicking
             const id = e.target.closest('[data-id]').id;
-            
+
             addItemToCartData(id);
             // Mak sure the items don't get duplicated if they are the same.
         }
@@ -50,7 +51,7 @@ function createItem(item) {
     category.textContent = item.category;
 
     const price = newItem.querySelector('[data-price-cent]');
-    price.textContent = item.priceCents;
+    price.textContent = moneyFormatter(item.priceCents/100) ;
 
 
 
