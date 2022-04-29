@@ -4,25 +4,21 @@ import items from '../items.json';
 
 const cartButton = document.querySelector('[data-cart-button]');
 const cartAll = document.querySelector('[data-cart]');
-const cartContainer = document.querySelector('[data-cart-container]');
+// const cartContainer = document.querySelector('[data-cart-container]');
 const cartItemsContainer = document.querySelector('[data-cart-items-container]');
 const displayAmountOfItems = document.querySelector('[data-amount-of-items]');
 let cartCountItems = cartItemsContainer.childElementCount;
 const cartItemTemplate = document.querySelector('[data-cart-item-template]');
 const cartTotal = document.querySelector('[data-cart-total]');
-const cartData = [];
+export const cartData = [];
 
 
 
 export function cartSetup() {
     // Hide the cart button if it has no items inside.
-    if (cartData.length == 0) {
-        cartButton.classList.add('invisible');
-    }
     // create an event listener to the cart button
     cartButtonListener();
-
-}
+ }
 
 function cartButtonListener() {
     // add the ability to hide and open (toggle) the cart window every time you click the button
@@ -32,45 +28,41 @@ function cartButtonListener() {
 }
 
 export function addItemToCartData(id) {
+    const duplicatedCartItem = cartData.find(item => item.id === id);
+    if (!duplicatedCartItem) {
+        const itemObject = {
+            id: id,
+            quantity: 1
+        }
 
-    const itemObject = {
-        id: id,
-        quantity: 1
+        cartData.push(itemObject);
+    } else {
+
+        duplicatedCartItem.quantity++
+
     }
 
-    cartData.push(itemObject);
-
+    renderCartItems();
     countItemsOnCart();
-    // make the cart button appear if it has items inside.
-    if (cartData.length > 0) {
-        cartButton.classList.remove('invisible');
-    }
-
-
 }
 
 function countItemsOnCart() {
     displayAmountOfItems.textContent = cartData.length;
 }
 
-export function deleteCartContent() {
+function deleteCartContent() {
     cartItemsContainer.innerHTML = '';
 }
 
-export function renderCartItems() {
+function renderCartItems() {
+    deleteCartContent();
     cartData.forEach(itemData => {
-        // console.log(items);
-        // console.log(itemData);
         const item = items.find( i => i.id == itemData.id);
-        console.log(item);
 
         const newItem = cartItemTemplate.content.cloneNode(true);
 
         const imageUrl = 'https://dummyimage.com/210x130/';
-
-
         // // add the information of the item to the template duplicate
-
         const id = newItem.querySelector('[data-cart-id]');
         id.id = item.id;
 
@@ -80,17 +72,16 @@ export function renderCartItems() {
         const name = newItem.querySelector('[data-cart-name]');
         name.textContent = item.name;
 
-        // const quantity = newItem.querySelector('[data-cart-quantity]');
-        // // category.textContent = item.category;
+        if (itemData.quantity > 1) {
+            const quantity = newItem.querySelector('[data-cart-quantity]');
+            quantity.textContent = `x${itemData.quantity}`;
+        }
 
         const price = newItem.querySelector('[data-cart-price-cent]');
-        price.textContent = item.priceCents;
-
-
-
+        price.textContent = item.priceCents * itemData.quantity;
+        // add the items to the cart container
         cartItemsContainer.appendChild(newItem);
-    })
-
+    });
     sumPriceItemsOnCart();
 }
 
@@ -106,8 +97,12 @@ function sumPriceItemsOnCart() {
 
     // make sure that the information is being added to the local storage.
 // cart
-// Make sure the total is the sum of the price of all the items inside of the cart.
+// make sure you don't get duplicate items in the cart. if they are duplicate they should add to the quantity,
+
 // add and event listener to the close button of each of the item added to the cart.
+
+
+
     // when clicked the item that you selected needs to be deleted
     // make sure that the item is deleted from the local storage (that way is going to be updated when I reload the page.)
 

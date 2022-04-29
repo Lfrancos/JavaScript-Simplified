@@ -1,5 +1,5 @@
 import items from '../items.json';
-import { addItemToCartData, renderCartItems, deleteCartContent } from './cart';
+import { addItemToCartData, renderCartItems, deleteCartContent, cartData } from './cart';
 
 // select the items that you need.
 const itemTemplate = document.querySelector('[data-item-template]');
@@ -12,22 +12,19 @@ export function setupStore() {
     document.addEventListener('click', e => {
 
         if (e.target.matches('[data-add-to-cart]')) {
-
             // select the item id of the element that we are clicking
             const id = e.target.closest('[data-id]').id;
-
+            
             addItemToCartData(id);
-            deleteCartContent();
-            renderCartItems();
             // Mak sure the items don't get duplicated if they are the same.
-
         }
 
     })
 
-
     items.forEach(createItem)
 }
+
+
 
 function createItem(item) {
     // create a duplicate of the template item
