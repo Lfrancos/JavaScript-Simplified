@@ -5,10 +5,12 @@ import { moneyFormatter } from './utils/moneyFormatter';
 // select the items that you need.
 const itemTemplate = document.querySelector('[data-item-template]');
 const elementsContainer = document.querySelector('#elements-container')
-
+const store = document.querySelector('[data-store]');
 
 // functions
 export function setupStore() {
+    console.log(store);
+    if (store === null) return;
     // adds an event listener to the "add to cart" button
     document.addEventListener('click', e => {
 

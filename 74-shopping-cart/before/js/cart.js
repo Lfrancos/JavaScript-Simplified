@@ -11,22 +11,45 @@ const displayAmountOfItems = document.querySelector('[data-amount-of-items]');
 let cartCountItems = cartItemsContainer.childElementCount;
 const cartItemTemplate = document.querySelector('[data-cart-item-template]');
 const cartTotal = document.querySelector('[data-cart-total]');
+// const localStorageData = JSON.parse(localStorage.getItem('cart items'));
 export const cartData = [];
 
 
 
 export function cartSetup() {
+    if (JSON.parse(localStorage.getItem('cart items')) === null || JSON.parse(localStorage.getItem('cart items')).length < 1 ) {
+
+        console.log(cartData);
+        console.log('the local storage is empty')
+
+    } else {
+        console.log('the local storage has some items');
+        console.log(cartData);
+        loadLocalStorage();
+        countItemsOnCart();
+        renderCartItems();
+        deleteItemButtonListener();
+    }
     hideOrShowCartButton();
-    // Hide the cart button if it has no items inside.
-    // create an event listener to the cart button
     cartButtonListener();
-    deleteItemButtonListener();
  }
+
+function addDataToLocalStorage() {
+    const dataToString = JSON.stringify(cartData);
+    localStorage.setItem('cart items', dataToString);
+}
+
+function loadLocalStorage() {
+    JSON.parse(localStorage.getItem('cart items')).forEach(item => {
+        cartData.push(item);
+    })
+}
 
 function cartButtonListener() {
     // add the ability to hide and open (toggle) the cart window every time you click the button
     cartButton.addEventListener('click', e => {
         cartAll.classList.toggle('invisible');
+        console.log('cart button clicked');
     })
 }
 function deleteItemButtonListener() {
@@ -34,10 +57,10 @@ function deleteItemButtonListener() {
         if (e.target.matches('[data-remove-from-cart-button]')) {
             const id = e.target.closest('[data-cart-id]').id;
             const item = cartData.find(i => i.id === id);
-            console.log(item);
             const index = cartData.indexOf(item);
-            console.log(index);
             cartData.splice(index,1)
+            JSON.parse(localStorage.getItem('cart items')).splice(index,1);
+            addDataToLocalStorage();
             deleteCartContent();
             renderCartItems();
             countItemsOnCart();
@@ -68,6 +91,10 @@ export function addItemToCartData(id) {
         duplicatedCartItem.quantity++
 
     }
+    console.log(cartData);
+    addDataToLocalStorage();
+
+    // loadLocalStorage();
 
     renderCartItems();
     countItemsOnCart();
@@ -76,7 +103,7 @@ export function addItemToCartData(id) {
 
 function countItemsOnCart() {
     const array = [];
-    cartData.forEach(item => {
+    JSON.parse(localStorage.getItem('cart items')).forEach(item => {
         array.push(item.quantity);
     })
 
@@ -90,7 +117,7 @@ function deleteCartContent() {
 
 function renderCartItems() {
     deleteCartContent();
-    cartData.forEach(itemData => {
+    JSON.parse(localStorage.getItem('cart items')).forEach(itemData => {
         const item = items.find( i => i.id == itemData.id);
 
         const newItem = cartItemTemplate.content.cloneNode(true);
@@ -112,13 +139,12 @@ function renderCartItems() {
         }
 
         const price = newItem.querySelector('[data-cart-price-cent]');
-        console.log(typeof item.priceCents)
         price.textContent = moneyFormatter((item.priceCents / 100) * itemData.quantity)  ;
         // add the items to the cart container
         cartItemsContainer.appendChild(newItem);
     });
     sumPriceItemsOnCart();
-    console.log(cartData);
+    hideOrShowCartButton();
 }
 
 function sumPriceItemsOnCart() {
@@ -133,20 +159,19 @@ function sumPriceItemsOnCart() {
     cartTotal.textContent = moneyFormatter(sumPrices / 100);
 }
 
+
+
+// cart Local storage.
+
     // make sure that the information is being added to the local storage.
-// cart
-// make sure you don't get duplicate items in the cart. if they are duplicate they should add to the quantity,
-
-// add and event listener to the close button of each of the item added to the cart.
-
-
-
-    // when clicked the item that you selected needs to be deleted
     // make sure that the item is deleted from the local storage (that way is going to be updated when I reload the page.)
+    // read what you have on local storage and update the cart. (this will help to make sure that if you change tabs the information that you have is always the same.)
 
-// if you have not selected any item the button of the cart should not appear
 
-// read what you have on local storage and update the cart. (this will help to make sure that if you change tabs the information that you have is always the same.)
+
+
+
+
 
 
 
